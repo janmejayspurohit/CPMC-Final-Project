@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import Home from "./screens/Home";
 import Rides from "./screens/Rides";
 import Profile from "./screens/Profile";
+import { useUserStore } from "./store/user";
 
 // Tabs
 const Tab = createBottomTabNavigator();
@@ -21,7 +22,7 @@ function TabsGroup({ navigation }) {
           if (route.name === "home") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "profile") {
-            iconName = focused ? "settings" : "ios-settings-sharp";
+            iconName = focused ? "person-sharp" : "person-outline";
           } else if (route.name === "rides") {
             iconName = focused ? "ios-notifications" : "notifications-outline";
           }
@@ -29,20 +30,16 @@ function TabsGroup({ navigation }) {
         },
         tabBarActiveTintColor: "#1DA1F2",
         tabBarInactiveTintColor: "gray",
-      })}
-    >
-      <Tab.Screen
-        name="home"
-        component={Home}
-        options={{
-          headerLeft: () => (
+        headerLeft: () => {
+          const { user } = useUserStore();
+          return (
             <Pressable
               onPress={() => {
-                // navigation.openDrawer()
+                // navigation.openDrawer();
               }}
             >
               <Image
-                source={require("./assets/icon.png")}
+                source={user?.photoURL ? { uri: user.photoURL } : require("./assets/icon.png")}
                 style={{
                   width: 40,
                   height: 40,
@@ -51,11 +48,13 @@ function TabsGroup({ navigation }) {
                 }}
               />
             </Pressable>
-          ),
-        }}
-      />
-      <Tab.Screen name="rides" component={Rides} />
-      <Tab.Screen name="profile" component={Profile} />
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="home" component={Home} options={{ title: "Home" }} />
+      <Tab.Screen name="rides" component={Rides} options={{ title: "Rides" }} />
+      <Tab.Screen name="profile" component={Profile} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );
 }

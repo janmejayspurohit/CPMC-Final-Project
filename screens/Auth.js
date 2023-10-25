@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,9 +21,7 @@ const Auth = ({ promptAsync }) => {
         }}
         onPress={() => promptAsync()}
       >
-        <Text style={{ fontWeight: "bold", color: "white", fontSize: 17 }}>
-          Sign In with Google
-        </Text>
+        <Text style={{ fontWeight: "bold", color: "white", fontSize: 17 }}>Sign In with Google</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

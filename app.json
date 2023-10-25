@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CPMC-Final-Project",
-    "slug": "CPMC-Final-Project",
+    "name": "cpmcfinalproject",
+    "slug": "cpmcfinalproject",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,26 +11,28 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.CPMCFinalProject"
+      "bundleIdentifier": "com.anonymous.cpmcfinalproject"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.CPMCFinalProject"
+      "package": "com.anonymous.cpmcfinalproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "scheme": "cpmcfinalproject",
     "extra": {
       "eas": {
-        "projectId": "ffc2cc4d-3b9a-4c77-b6c4-b14b0afd9e07"
+        "projectId": "7ba09bad-1c94-4cad-a19b-6e7ebf7beb32"
       }
-    },
-    "scheme": "CPMC-Final-Project"
+    }
   }
 }

@@ -1,8 +1,5 @@
 import "react-native-gesture-handler";
 import Navigation from "./Navigation";
-import { TamaguiProvider } from "tamagui";
-
-import config from "./tamagui.config";
 import Auth from "./screens/Auth";
 import { useEffect, useState } from "react";
 
@@ -12,17 +9,18 @@ import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "fi
 import { auth } from "./firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, View } from "react-native";
+import { useUserStore } from "./store/user";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
-  const [user, setUser] = useState({});
+  const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(false);
-
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    iosClientId: "",
-    androidClientId: "",
+  const [, response, promptAsync] = Google.useIdTokenAuthRequest({
+    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
   });
+
   const getLocalUser = async () => {
     try {
       setLoading(true);
@@ -51,8 +49,6 @@ export default function App() {
         await AsyncStorage.setItem("@user", JSON.stringify(user));
         console.log(JSON.stringify(user, null, 2));
         setUser(user);
-      } else {
-        console.log("user not authenticated");
       }
     });
     return () => unsub();
@@ -65,5 +61,5 @@ export default function App() {
       </View>
     );
 
-  return <TamaguiProvider config={config}>{user?.email ? <Navigation /> : <Auth promptAsync={promptAsync} />}</TamaguiProvider>;
+  return user?.email ? <Navigation /> : <Auth promptAsync={promptAsync} />;
 }
