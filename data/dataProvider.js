@@ -1,8 +1,9 @@
 import { getFirestore, collection, addDoc, getDocs, doc } from "firebase/firestore";
-import { app } from "../my-second-app/firebaseConfig.js";
+import { app } from "../firebaseConfig";
 const db = getFirestore(app);
 
-const addRecord = async (collectionName = "rides", body = []) => {
+const addRecord = async (collectionName, body) => {
+  if (!collectionName || !body) throw new Error("Missing data for this operation!");
   try {
     const dataCollection = collection(db, collectionName);
     for (const item of body) {
@@ -19,7 +20,8 @@ const addRecord = async (collectionName = "rides", body = []) => {
   }
 };
 
-const getAllRecords = async (collectionName = "rides") => {
+const getAllRecords = async (collectionName) => {
+  if (!collectionName) throw new Error("Missing data for this operation!");
   try {
     const dataCollection = collection(db, collectionName);
     const data = await getDocs(dataCollection);
@@ -32,7 +34,33 @@ const getAllRecords = async (collectionName = "rides") => {
   }
 };
 
-const deleteRecord = async (collectionName = "rides", id) => {
+const getRecordById = async (collectionName, id) => {
+  if (!collectionName || !id) throw new Error("Missing data for this operation!");
+  try {
+    const dataCollection = collection(db, collectionName);
+    const data = await getDocs(dataCollection);
+    const dataArray = data.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+    const record = dataArray.find((record) => record.id === id);
+    return record;
+  } catch (error) {
+    console.error("Error getting data from firestore:", error);
+  }
+};
+
+const updateRecord = async (collectionName, id, body) => {
+  if (!collectionName || !id || !body) throw new Error("Missing data for this operation!");
+  try {
+    const dataCollection = collection(db, collectionName);
+    await setDoc(doc(db, dataCollection, id), body);
+  } catch (error) {
+    console.error("Error updating data in firestore:", error);
+  }
+};
+
+const deleteRecord = async (collectionName, id) => {
+  if (!collectionName || !id) throw new Error("Missing data for this operation!");
   try {
     const dataCollection = collection(db, collectionName);
     await deleteDoc(doc(db, dataCollection, id));
@@ -56,8 +84,10 @@ const getUserByEmail = async (email) => {
 };
 
 export default {
-  addRecord,
-  getAllRecords,
-  deleteRecord,
+  addRecord, // C
+  getAllRecords, // R
+  getRecordById, // R
+  updateRecord, // U
+  deleteRecord, // D
   getUserByEmail,
 };

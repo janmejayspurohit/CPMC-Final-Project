@@ -2,13 +2,14 @@ import "react-native-gesture-handler";
 import Navigation from "./Navigation";
 import Auth from "./screens/Auth";
 import { useEffect, useState } from "react";
-
+// Firebase imports
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, View } from "react-native";
+// Store imports
 import { useUserStore } from "./store/user";
 
 WebBrowser.maybeCompleteAuthSession();

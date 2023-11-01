@@ -21,4 +21,4 @@ const auth = !getApps().length
     })
   : getAuth(app);
 
-export { auth };
+export { auth, app };

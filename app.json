@@ -21,12 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.cpmcfinalproject",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBHUC4lN2RxJkQ4EcuTvTL0EE0Q0VfW08I"
-        }
-      }
+      "package": "com.anonymous.cpmcfinalproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
