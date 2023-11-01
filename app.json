@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.cpmcfinalproject"
@@ -23,7 +21,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.cpmcfinalproject"
+      "package": "com.anonymous.cpmcfinalproject",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBHUC4lN2RxJkQ4EcuTvTL0EE0Q0VfW08I"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -3,19 +3,17 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Auth = ({ promptAsync }) => {
+  // cpmcpro
   return (
     <SafeAreaView>
-      <Text>Auth</Text>
       <TouchableOpacity
         style={{
           backgroundColor: "#4285F4",
-          width: "90%",
           padding: 10,
           borderRadius: 15,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          gap: 15,
           marginTop: 80,
           marginBottom: 150,
         }}
