@@ -7,7 +7,6 @@ import { useUserStore } from "../store/user";
 
 const Profile = () => {
   const { user, setUser } = useUserStore();
-  console.log("🚀 -> file: Profile.js:10 -> user:", user);
 
   const handleSignOut = async () => {
     console.log("Signing out");
@@ -23,7 +22,7 @@ const Profile = () => {
         <Text style={styles.text}>ID: {user.uid}</Text>
         <Text style={styles.text}>Name: {user.displayName}</Text>
         <Text style={styles.text}>Email: {user.email}</Text>
-        <Text style={styles.text}>Last login at: {new Date(parseInt(user?.lastLoginAt)).toLocaleString()}</Text>
+        {user?.lastLoginAt && <Text style={styles.text}>Last login at: {new Date(parseInt(user.lastLoginAt)).toLocaleString()}</Text>}
         <View
           style={{
             borderBottomColor: "lightgray",

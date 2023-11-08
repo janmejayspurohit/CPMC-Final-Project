@@ -33,6 +33,7 @@ const Rides = () => {
               <Text style={styles.detail}>
                 Date: {new Date(ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000).toLocaleString()}
               </Text>
+              <Text style={styles.detail}>Created by: {ride.createdBy}</Text>
               <Text style={styles.detail}>Origin: {ride.origin.address}</Text>
               <Text style={styles.detail}>Destination: {ride.destination.address}</Text>
               <Text style={styles.detail}>Distance: {Math.round((ride.distance / 1609) * 100) / 100} miles</Text>
