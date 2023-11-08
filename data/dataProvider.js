@@ -2,7 +2,7 @@ import { getFirestore, collection, addDoc, getDocs, doc } from "firebase/firesto
 import { app } from "../firebaseConfig";
 const db = getFirestore(app);
 
-const addRecord = async (collectionName, body) => {
+const addRecords = async (collectionName, body) => {
   if (!collectionName || !body) throw new Error("Missing data for this operation!");
   try {
     const dataCollection = collection(db, collectionName);
@@ -83,8 +83,8 @@ const getUserByEmail = async (email) => {
   }
 };
 
-export default {
-  addRecord, // C
+export {
+  addRecords, // C
   getAllRecords, // R
   getRecordById, // R
   updateRecord, // U

@@ -8,6 +8,27 @@ import Home from "./screens/Home";
 import Rides from "./screens/Rides";
 import Profile from "./screens/Profile";
 import { useUserStore } from "./store/user";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import NewRide from "./screens/NewRide";
+
+// Stacks
+const RideStack = createNativeStackNavigator();
+function RidesStackGroup() {
+  return (
+    <RideStack.Navigator screenOptions={{ headerShown: false }}>
+      <RideStack.Screen name="Rides" component={Rides} />
+      <RideStack.Screen
+        name="NewRide"
+        component={NewRide}
+        options={{
+          presentation: "modal",
+          headerTitle: "Create a new ride",
+          headerShown: true,
+        }}
+      />
+    </RideStack.Navigator>
+  );
+}
 
 // Tabs
 const Tab = createBottomTabNavigator();
@@ -53,7 +74,7 @@ function TabsGroup({ navigation }) {
       })}
     >
       <Tab.Screen name="home" component={Home} options={{ title: "Home" }} />
-      <Tab.Screen name="rides" component={Rides} options={{ title: "Rides" }} />
+      <Tab.Screen name="rides" component={RidesStackGroup} options={{ title: "Rides" }} />
       <Tab.Screen name="profile" component={Profile} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );

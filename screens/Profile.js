@@ -1,4 +1,4 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 import React from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
@@ -8,7 +8,7 @@ import { useUserStore } from "../store/user";
 const Profile = () => {
   const { user, setUser } = useUserStore();
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Profile</Text>
       <Text>ID: {user.uid}</Text>
       <Text>Name: {user.displayName}</Text>
@@ -25,5 +25,13 @@ const Profile = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignContent: "center",
+    margin: 8,
+  },
+});
 
 export default Profile;

@@ -2426,6 +2426,13 @@
     prompts "^2.4.0"
     semver "^7.5.2"
 
+"@react-native-community/datetimepicker@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-7.2.0.tgz#db8c03dbf49bf3c24b06b617a8467d8b05511f62"
+  integrity sha512-dO1sQy83M/EvnHE2egto05iwXZX7EYn5f/VDMp6afZFRFXRiRo7CzB3VFg4B55gJRJMNBv06NYMLPM3SlpnEGQ==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.72.0.tgz#c82a76a1d86ec0c3907be76f7faf97a32bbed05d"
@@ -4636,6 +4643,11 @@ expo-auth-session@^5.2.0:
     invariant "^2.2.4"
     qs "^6.11.0"
 
+expo-checkbox@~2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/expo-checkbox/-/expo-checkbox-2.4.0.tgz#5d5bb82117f4d781eb1d4db0ff96e1f0a4a0547a"
+  integrity sha512-ZEe79B73I+NDkLZQ2pR1E5rv9ey1oleNI/s2/Jdb9zKWztS0KVU2K+drFn2t/zyoSbR1U+CNwik2v7h6JxrXcA==
+
 expo-constants@~14.4.2:
   version "14.4.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-14.4.2.tgz#cac5e8b524069545739b8d8595ce96cc5be6578c"
@@ -5187,6 +5199,11 @@ gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
+
+geolib@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/geolib/-/geolib-3.3.4.tgz#09883ba2fdab84d2764cf3615dbafb9bce3c54d0"
+  integrity sha512-EicrlLLL3S42gE9/wde+11uiaYAaeSVDwCUIv2uMIoRBfNJCn8EsSI+6nS3r4TCKDO6+RQNM9ayLq2at+oZQWQ==
 
 get-caller-file@^2.0.1, get-caller-file@^2.0.5:
   version "2.0.5"
@@ -7687,7 +7704,7 @@ prompts@^2.3.2, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.7.2:
+prop-types@*, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -7904,6 +7921,19 @@ react-native-maps@^1.8.0:
   integrity sha512-KfVZ03L42+a22Fkcl2uDe5d+73BweTlcRUzm2G+aQUJ7fHrBxj7CuXWtKMSNpVDiO3YDCWcshiiyjSXxkd/qOw==
   dependencies:
     "@types/geojson" "^7946.0.10"
+
+react-native-numeric-input@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-numeric-input/-/react-native-numeric-input-1.9.1.tgz#eff20699a51ecce6cbd1e3682f68dad981d84e35"
+  integrity sha512-uJiMjundXHiBcBLHgSqbfSjLdBM+4OBgLJLSsYG5/+XST5XWufsU8eZaEsn1miOkhjj2B7WgshjNX2Qm+4n3kw==
+  dependencies:
+    prop-types "^15.6.1"
+    react-native-pixel-perfect "^1.0.1"
+
+react-native-pixel-perfect@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-pixel-perfect/-/react-native-pixel-perfect-1.0.2.tgz#8e6dc97e377caa4bd07f9e584ba438d53c0e25e8"
+  integrity sha512-0IvYCNkxuQbQC9q4tI+C3i6o38nbx916p7gBRBWuPxDhKBCuTkVV3VukcfW6vtjRlwQm6kwQcF9OtI+yUBt+YA==
 
 react-native-reanimated@~3.3.0:
   version "3.3.0"
