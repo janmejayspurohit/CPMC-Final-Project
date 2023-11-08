@@ -8,6 +8,7 @@ import getDistance from "geolib/es/getDistance";
 import { addRecords } from "../data/dataProvider";
 import { useUserStore } from "../store/user";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const NewRide = () => {
   const [mode, setMode] = useState("date");
@@ -16,6 +17,7 @@ const NewRide = () => {
   const [isDestinationVisible, setDestinationVisible] = useState(false);
   const [distance, setDistance] = useState(null);
   const { user } = useUserStore();
+  const navigator = useNavigation();
 
   // Form states
   const [name, setName] = useState("");
@@ -83,7 +85,15 @@ const NewRide = () => {
       setOrigin({});
       setDestination({});
       setDistance(null);
-      Alert.alert("Success!", "Ride created successfully");
+      Alert.alert("Success!", "Ride created successfully", [
+        {
+          text: "Okay",
+          onPress: () =>
+            navigator.navigate("rides", {
+              screen: "Rides",
+            }),
+        },
+      ]);
     }
   };
 
@@ -154,7 +164,7 @@ const NewRide = () => {
         <View style={styles.verticalSection}>
           {origin?.address && <Text>Origin: {origin.address}</Text>}
           {destination?.address && <Text>Destination: {destination.address}</Text>}
-          <Text>Distance: {distance} meters</Text>
+          <Text>Distance: {Math.round((distance / 1609) * 100) / 100} miles</Text>
           <Button
             title="Clear"
             onPress={() => {

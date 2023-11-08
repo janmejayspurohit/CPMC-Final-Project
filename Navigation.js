@@ -53,28 +53,29 @@ function TabsGroup({ navigation }) {
         tabBarInactiveTintColor: "gray",
         headerLeft: () => {
           const { user } = useUserStore();
-          return (
-            <Pressable
-              onPress={() => {
-                // navigation.openDrawer();
-              }}
-            >
-              <Image
-                source={user?.photoURL ? { uri: user.photoURL } : require("./assets/icon.png")}
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 100,
-                  marginLeft: 15,
+          if (route.name !== "profile")
+            return (
+              <Pressable
+                onPress={() => {
+                  // navigation.openDrawer();
                 }}
-              />
-            </Pressable>
-          );
+              >
+                <Image
+                  source={user?.photoURL ? { uri: user.photoURL } : require("./assets/icon.png")}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 100,
+                    marginLeft: 15,
+                  }}
+                />
+              </Pressable>
+            );
         },
       })}
     >
       <Tab.Screen name="home" component={Home} options={{ title: "Home" }} />
-      <Tab.Screen name="rides" component={RidesStackGroup} options={{ title: "Rides" }} />
+      <Tab.Screen name="rides" component={RidesStackGroup} options={{ title: "My Rides" }} />
       <Tab.Screen name="profile" component={Profile} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );

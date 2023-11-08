@@ -1,32 +1,31 @@
-import { View, Text, TextInput, Pressable, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Button, Alert } from "react-native";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { getAllRecords } from "../data/dataProvider";
+import { deleteRecord, getAllRecords, updateRecord } from "../data/dataProvider";
 import { useUserStore } from "../store/user";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const Rides = () => {
   const [rides, setRides] = useState([]);
   const { user } = useUserStore();
-  const myRides = rides.filter((ride) => ride.participants?.contains(user.email));
+  const myRides = rides.filter((ride) => ride.participants?.includes(user.email));
   const navigation = useNavigation();
-  console.log("🚀 -> file: Rides.js:13 -> myRides:", myRides);
 
   const fetchData = async () => {
     const data = await getAllRecords("rides");
     setRides(data);
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     fetchData();
-  }, []);
+  });
 
   return (
     <View style={styles.container}>
       {myRides.length > 0 ? (
         <FlatList
           data={myRides}
-          keyExtractor={(r) => r.email}
+          keyExtractor={(r) => r.id}
           renderItem={({ item: ride }) => (
             <View style={styles.card}>
               <Text style={styles.title}>{ride.name}</Text>
@@ -36,9 +35,63 @@ const Rides = () => {
               </Text>
               <Text style={styles.detail}>Origin: {ride.origin.address}</Text>
               <Text style={styles.detail}>Destination: {ride.destination.address}</Text>
-              <Text style={styles.detail}>Distance: {ride.distance} meters</Text>
-              <Text style={styles.detail}>Number of Guests: {ride.numberOfGuests}</Text>
+              <Text style={styles.detail}>Distance: {Math.round((ride.distance / 1609) * 100) / 100} miles</Text>
+              <Text style={styles.detail}>
+                Number of Guests: {ride.participants.length} out of {ride.numberOfGuests}
+              </Text>
               <Text style={styles.detail}>Is Flexible: {ride.isFlexible ? "Yes" : "No"}</Text>
+              {ride.participants?.includes(user.email) && ride.createdBy !== user.email && (
+                <Button
+                  title="Leave Ride"
+                  onPress={() =>
+                    Alert.alert(
+                      "Confirm leave?",
+                      `Are you sure you want to leave this ride to ${ride.destination.address} on ${new Date(
+                        ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                      ).toLocaleString()}?`,
+                      [
+                        {
+                          text: "Okay",
+                          onPress: () => {
+                            updateRecord("rides", ride.id, {
+                              participants: ride.participants.filter((r) => r !== user.email),
+                            });
+                          },
+                        },
+                        {
+                          text: "Cancel",
+                          onPress: () => {},
+                        },
+                      ]
+                    )
+                  }
+                />
+              )}
+              {ride.participants?.includes(user.email) && ride.createdBy === user.email && (
+                <Button
+                  title="Delete Ride"
+                  onPress={() =>
+                    Alert.alert(
+                      "Confirm delete?",
+                      `Are you sure you want to delete this ride to ${ride.destination.address} on ${new Date(
+                        ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                      ).toLocaleString()}?`,
+                      [
+                        {
+                          text: "Okay",
+                          onPress: () => {
+                            deleteRecord("rides", ride.id);
+                          },
+                        },
+                        {
+                          text: "Cancel",
+                          onPress: () => {},
+                        },
+                      ]
+                    )
+                  }
+                />
+              )}
             </View>
           )}
         />
@@ -54,7 +107,7 @@ const Rides = () => {
         </Text>
       )}
       <TouchableOpacity onPress={() => navigation.navigate("NewRide")} style={styles.addRideButton}>
-        <Ionicons name="add-circle" size={64} color="#000000" />
+        <Ionicons name="add-circle" size={64} color="#2296f3" />
       </TouchableOpacity>
     </View>
   );

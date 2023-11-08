@@ -1,4 +1,4 @@
-import { getFirestore, collection, addDoc, getDocs, doc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 const db = getFirestore(app);
 
@@ -53,7 +53,7 @@ const updateRecord = async (collectionName, id, body) => {
   if (!collectionName || !id || !body) throw new Error("Missing data for this operation!");
   try {
     const dataCollection = collection(db, collectionName);
-    await setDoc(doc(db, dataCollection, id), body);
+    await updateDoc(doc(dataCollection, id), body);
   } catch (error) {
     console.error("Error updating data in firestore:", error);
   }
@@ -62,8 +62,8 @@ const updateRecord = async (collectionName, id, body) => {
 const deleteRecord = async (collectionName, id) => {
   if (!collectionName || !id) throw new Error("Missing data for this operation!");
   try {
-    const dataCollection = collection(db, collectionName);
-    await deleteDoc(doc(db, dataCollection, id));
+    const dataCollection = doc(db, collectionName, id);
+    await deleteDoc(dataCollection);
   } catch (error) {
     console.error("Error deleting data from firestore:", error);
   }

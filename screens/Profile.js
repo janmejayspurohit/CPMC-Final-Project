@@ -1,5 +1,5 @@
-import { View, Text, Button, StyleSheet } from "react-native";
 import React from "react";
+import { View, Text, Button, Image, StyleSheet } from "react-native";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,30 +7,52 @@ import { useUserStore } from "../store/user";
 
 const Profile = () => {
   const { user, setUser } = useUserStore();
+  console.log("🚀 -> file: Profile.js:10 -> user:", user);
+
+  const handleSignOut = async () => {
+    console.log("Signing out");
+    await signOut(auth);
+    await AsyncStorage.removeItem("@user");
+    setUser({});
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Profile</Text>
-      <Text>ID: {user.uid}</Text>
-      <Text>Name: {user.displayName}</Text>
-      <Text>Email: {user.email}</Text>
-      <Button
-        title="Sign Out"
-        onPress={async () => {
-          console.log("signing out");
-          await signOut(auth);
-          await AsyncStorage.removeItem("@user");
-          setUser({});
-        }}
-      />
-    </View>
+    user.email && (
+      <View style={styles.container}>
+        <Image source={user?.photoURL ? { uri: user.photoURL } : require("../assets/icon.png")} style={styles.profileImage} />
+        <Text style={styles.text}>ID: {user.uid}</Text>
+        <Text style={styles.text}>Name: {user.displayName}</Text>
+        <Text style={styles.text}>Email: {user.email}</Text>
+        <Text style={styles.text}>Last login at: {new Date(parseInt(user?.lastLoginAt)).toLocaleString()}</Text>
+        <View
+          style={{
+            borderBottomColor: "lightgray",
+            borderWidth: 0.5,
+            marginVertical: 10,
+            width: "100%",
+          }}
+        />
+        <Button title="Sign Out" onPress={handleSignOut} />
+      </View>
+    )
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: "center",
+    alignItems: "center",
     margin: 8,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 18,
+    fontWeight: "semibold",
   },
 });
 
