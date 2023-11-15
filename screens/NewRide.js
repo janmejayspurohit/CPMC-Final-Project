@@ -72,6 +72,8 @@ const NewRide = () => {
           createdBy: user.email,
           distance,
           participants: [user.email],
+          status: "INITIATED",
+          ratings: [],
         },
       ]);
     } catch (error) {

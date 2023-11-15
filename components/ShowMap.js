@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, Button } from "react-native";
 import React, { useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -60,7 +60,13 @@ const ShowMap = ({ setCoordinates, closeDialog }) => {
         onPress={handleMapPress}
         region={{ ...markerPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
       >
-        <Marker coordinate={markerPosition} title="Pin" />
+        <Marker
+          coordinate={markerPosition}
+          title="Pin"
+          description="Drag and drop to pick a place"
+          draggable={true}
+          onDragEnd={handleMarkerDrag}
+        />
       </MapView>
       {closeDialog && (
         <Button

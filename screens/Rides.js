@@ -1,30 +1,71 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Button, Alert } from "react-native";
-import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Button, Alert, RefreshControl } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { deleteRecord, getAllRecords, updateRecord } from "../data/dataProvider";
 import { useUserStore } from "../store/user";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useDebouncedEffect } from "../hooks/useDebounceEffect";
+import SearchableInput from "../components/SearchableInput";
 
 const Rides = () => {
   const [rides, setRides] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const { user } = useUserStore();
-  const myRides = rides.filter((ride) => ride.participants?.includes(user.email));
   const navigation = useNavigation();
 
+  // DEBOUNCED SEARCH
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
   const fetchData = async () => {
+    setRefreshing(true);
     const data = await getAllRecords("rides");
-    setRides(data);
+    setRides(data.filter((ride) => ride.participants?.includes(user.email)));
+    setRefreshing(false);
   };
 
-  useFocusEffect(() => {
+  useDebouncedEffect(
+    () => {
+      if (!searchTerm || searchTerm.trim().length > 3) setDebouncedSearch(searchTerm);
+    },
+    500,
+    [searchTerm]
+  );
+
+  useEffect(() => {
     fetchData();
-  });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener("focus", () => {
+      fetchData();
+    });
+
+    return unsubscribeFocus;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (debouncedSearch)
+      setRides((prevRides) =>
+        prevRides.filter(
+          (ride) =>
+            ride.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            ride.createdBy.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            ride.description.toLowerCase().includes(debouncedSearch.toLowerCase())
+        )
+      );
+    else {
+      setSearchTerm("");
+      fetchData();
+    }
+  }, [debouncedSearch]);
 
   return (
     <View style={styles.container}>
-      {myRides.length > 0 ? (
+      {rides.length > 0 && <SearchableInput value={searchTerm} onChange={setSearchTerm} />}
+      {rides.length > 0 ? (
         <FlatList
-          data={myRides}
+          data={rides}
           keyExtractor={(r) => r.id}
           renderItem={({ item: ride }) => (
             <View style={styles.card}>
@@ -33,6 +74,7 @@ const Rides = () => {
               <Text style={styles.detail}>
                 Date: {new Date(ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000).toLocaleString()}
               </Text>
+              <Text style={(styles.detail, styles.status(ride.status))}>Status: {ride.status}</Text>
               <Text style={styles.detail}>Created by: {ride.createdBy}</Text>
               <Text style={styles.detail}>Origin: {ride.origin.address}</Text>
               <Text style={styles.detail}>Destination: {ride.destination.address}</Text>
@@ -41,60 +83,140 @@ const Rides = () => {
                 Number of Guests: {ride.participants.length} out of {ride.numberOfGuests}
               </Text>
               <Text style={styles.detail}>Is Flexible: {ride.isFlexible ? "Yes" : "No"}</Text>
-              {ride.participants?.includes(user.email) && ride.createdBy !== user.email && (
-                <Button
-                  title="Leave Ride"
-                  onPress={() =>
-                    Alert.alert(
-                      "Confirm leave?",
-                      `Are you sure you want to leave this ride to ${ride.destination.address} on ${new Date(
-                        ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
-                      ).toLocaleString()}?`,
-                      [
-                        {
-                          text: "Okay",
-                          onPress: () => {
-                            updateRecord("rides", ride.id, {
-                              participants: ride.participants.filter((r) => r !== user.email),
-                            });
+              {ride.createdBy === user.email ? (
+                <View style={styles.buttonContainer}>
+                  {ride.status === "INITIATED" && (
+                    <Button
+                      title="Start Ride"
+                      onPress={() =>
+                        Alert.alert(
+                          "Confirm start?",
+                          `Are you sure you want to start this ride to ${ride.destination.address} on ${new Date(
+                            ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                          ).toLocaleString()}?`,
+                          [
+                            {
+                              text: "Okay",
+                              onPress: async () => {
+                                updateRecord("rides", ride.id, {
+                                  status: "ONGOING",
+                                });
+                                await fetchData();
+                              },
+                            },
+                            {
+                              text: "Cancel",
+                              onPress: () => {},
+                            },
+                          ]
+                        )
+                      }
+                    />
+                  )}
+                  {ride.status === "ONGOING" && (
+                    <Button
+                      title="End Ride"
+                      onPress={() =>
+                        Alert.alert(
+                          "Confirm end?",
+                          `Are you sure you want to end this ride to ${ride.destination.address} on ${new Date(
+                            ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                          ).toLocaleString()}?`,
+                          [
+                            {
+                              text: "Okay",
+                              onPress: async () => {
+                                updateRecord("rides", ride.id, {
+                                  status: "COMPLETED",
+                                });
+                                await fetchData();
+                              },
+                            },
+                            {
+                              text: "Cancel",
+                              onPress: () => {},
+                            },
+                          ]
+                        )
+                      }
+                    />
+                  )}
+                  <Button
+                    title="Delete Ride"
+                    // disabled={ride.status !== "INITIATED"}
+                    onPress={() =>
+                      Alert.alert(
+                        "Confirm delete?",
+                        `Are you sure you want to delete this ride to ${ride.destination.address} on ${new Date(
+                          ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                        ).toLocaleString()}?`,
+                        [
+                          {
+                            text: "Okay",
+                            onPress: async () => {
+                              deleteRecord("rides", ride.id);
+                              await fetchData();
+                            },
                           },
-                        },
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                        },
-                      ]
-                    )
-                  }
-                />
-              )}
-              {ride.participants?.includes(user.email) && ride.createdBy === user.email && (
-                <Button
-                  title="Delete Ride"
-                  onPress={() =>
-                    Alert.alert(
-                      "Confirm delete?",
-                      `Are you sure you want to delete this ride to ${ride.destination.address} on ${new Date(
-                        ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
-                      ).toLocaleString()}?`,
-                      [
-                        {
-                          text: "Okay",
-                          onPress: () => {
-                            deleteRecord("rides", ride.id);
+                          {
+                            text: "Cancel",
+                            onPress: () => {},
                           },
-                        },
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                        },
-                      ]
-                    )
-                  }
-                />
+                        ]
+                      )
+                    }
+                  />
+                </View>
+              ) : (
+                <View style={styles.buttonContainer}>
+                  {ride.status === "COMPLETED" && (
+                    <Button
+                      title="Rate Ride"
+                      onPress={async () => {
+                        updateRecord("rides", ride.id, {
+                          rating: [
+                            ...rides.rating,
+                            {
+                              user: user.email,
+                              rating: 5,
+                            },
+                          ],
+                        });
+                        await fetchData();
+                      }}
+                    />
+                  )}
+                  <Button
+                    title="Leave Ride"
+                    onPress={() =>
+                      Alert.alert(
+                        "Confirm leave?",
+                        `Are you sure you want to leave this ride to ${ride.destination.address} on ${new Date(
+                          ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                        ).toLocaleString()}?`,
+                        [
+                          {
+                            text: "Okay",
+                            onPress: async () => {
+                              updateRecord("rides", ride.id, {
+                                participants: ride.participants.filter((r) => r !== user.email),
+                              });
+                              await fetchData();
+                            },
+                          },
+                          {
+                            text: "Cancel",
+                            onPress: () => {},
+                          },
+                        ]
+                      )
+                    }
+                  />
+                </View>
               )}
             </View>
           )}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchData} />}
         />
       ) : (
         <Text
@@ -155,6 +277,18 @@ const styles = StyleSheet.create({
   detail: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  status(state) {
+    return {
+      fontSize: 14,
+      marginBottom: 4,
+      color: state == "INITIATED" ? "orange" : state == "ONGOING" ? "blue" : "green",
+    };
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 8,
   },
 });
 

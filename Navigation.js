@@ -74,7 +74,7 @@ function TabsGroup({ navigation }) {
         },
       })}
     >
-      <Tab.Screen name="home" component={Home} options={{ title: "Home" }} />
+      <Tab.Screen name="home" component={Home} options={{ title: "Available Rides" }} />
       <Tab.Screen name="rides" component={RidesStackGroup} options={{ title: "My Rides" }} />
       <Tab.Screen name="profile" component={Profile} options={{ title: "Profile" }} />
     </Tab.Navigator>
