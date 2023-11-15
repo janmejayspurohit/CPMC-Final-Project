@@ -69,7 +69,7 @@ const Rides = () => {
           data={rides}
           keyExtractor={(r) => r.id}
           renderItem={({ item: ride }) => {
-            const cRating = ride.ratings.find((r) => r.user === user.email);
+            const cRating = ride.ratings?.find((r) => r.user === user.email);
             return (
               <View style={styles.card}>
                 <Text style={styles.title}>{ride.name}</Text>
@@ -222,32 +222,34 @@ const Rides = () => {
                         )}
                       </View>
                     ) : (
-                      <Button
-                        title="Leave Ride"
-                        onPress={() =>
-                          Alert.alert(
-                            "Confirm leave?",
-                            `Are you sure you want to leave this ride to ${ride.destination.address} on ${new Date(
-                              ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
-                            ).toLocaleString()}?`,
-                            [
-                              {
-                                text: "Okay",
-                                onPress: async () => {
-                                  updateRecord("rides", ride.id, {
-                                    participants: ride.participants.filter((r) => r !== user.email),
-                                  });
-                                  await fetchData();
+                      ride.status === "INITIATED" && (
+                        <Button
+                          title="Leave Ride"
+                          onPress={() =>
+                            Alert.alert(
+                              "Confirm leave?",
+                              `Are you sure you want to leave this ride to ${ride.destination.address} on ${new Date(
+                                ride.startDate.seconds * 1000 + ride.startDate.nanoseconds / 1000000
+                              ).toLocaleString()}?`,
+                              [
+                                {
+                                  text: "Okay",
+                                  onPress: async () => {
+                                    updateRecord("rides", ride.id, {
+                                      participants: ride.participants.filter((r) => r !== user.email),
+                                    });
+                                    await fetchData();
+                                  },
                                 },
-                              },
-                              {
-                                text: "Cancel",
-                                onPress: () => {},
-                              },
-                            ]
-                          )
-                        }
-                      />
+                                {
+                                  text: "Cancel",
+                                  onPress: () => {},
+                                },
+                              ]
+                            )
+                          }
+                        />
+                      )
                     )}
                   </View>
                 )}
